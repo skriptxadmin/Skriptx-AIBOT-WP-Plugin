@@ -3,12 +3,12 @@
  * Plugin Name: Skriptx AIBot
  * Plugin URI: https://aibot.skriptx.com
  * Description: Skriptx AIBot is an AI-powered WordPress plugin that helps you generate high-quality content, automate writing tasks, and enhance your website productivity using advanced AI models.
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: Skriptx
  * Author URI: https://skriptx.com
  * Support URI: https://support.skriptx.com
  * Text Domain: skriptx-aibot
- * Stable tag: 1.0.0
+ * Stable tag: 2.0.0
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -19,7 +19,7 @@ if ( ! defined('ABSPATH') ) {
 
 class AIBotPlugin
 {
-    private $version = "1.0.0";
+    private $version = "2.0.0";
     /**
      * Constructor
      */
@@ -61,14 +61,14 @@ class AIBotPlugin
             'aibot-style',
             plugin_dir_url(__FILE__) . 'assets/css/style.css',
             [],
-            '1.0.0'
+            '2.0.0'
         );
 
         wp_enqueue_script(
             'aibot-script',
             plugin_dir_url(__FILE__) . 'assets/js/script.js',
             ['jquery'],
-            '1.0.0',
+            '2.0.0',
             true
         );
     }
