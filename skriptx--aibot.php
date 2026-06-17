@@ -8,7 +8,9 @@
  * Author URI: https://skriptx.com
  * Support URI: https://support.skriptx.com
  * Text Domain: skriptx-aibot
- * License: Properaitory
+ * Stable tag: 1.0.0
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if (! defined('ABSPATH')) {
