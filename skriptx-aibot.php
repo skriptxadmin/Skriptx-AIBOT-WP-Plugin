@@ -13,22 +13,27 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if (! defined('ABSPATH')) {
+if ( ! defined('ABSPATH') ) {
     exit;
 }
 
 class AIBotPlugin
 {
+    private $version = "1.0.0";
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
 
         add_action('wp_head', [$this, 'inject_tags']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_widget']);
     }
 
     /**
-     * Register WP Admin Menu
+     * Register Admin Menu
      */
     public function register_admin_menu()
     {
@@ -44,11 +49,11 @@ class AIBotPlugin
     }
 
     /**
-     * Load CSS & JS only on AIBot page
+     * Admin assets
      */
     public function enqueue_assets($hook)
     {
-        if ($hook !== 'toplevel_page_aibot') {
+        if ( $hook !== 'toplevel_page_aibot' ) {
             return;
         }
 
@@ -69,33 +74,61 @@ class AIBotPlugin
     }
 
     /**
-     * Load Login Page
+     * Load admin page
      */
     public function aibot_page()
     {
         include plugin_dir_path(__FILE__) . 'pages/aibot.php';
     }
 
+    /**
+     * Inject meta + prepare frontend integration
+     */
     public function inject_tags()
     {
-        $verify_key = get_option('aibot_verify_key', '');
-        $live_key   = get_option('aibot_live_key', '');
+        $aibot_verify_key = get_option('aibot_verify_key', '');
+        $aibot_live_key   = get_option('aibot_live_key', '');
 
-        if (! empty($verify_key)) {
-
-            echo sprintf(
-                '<meta name="sb:verify-key" content="%s">' . PHP_EOL,
-                esc_attr($verify_key)
-            );
+        /**
+         * Verify meta tag
+         */
+        if ( ! empty($aibot_verify_key) ) {
+            echo '<meta name="sb:verify-key" content="' . esc_attr($aibot_verify_key) . '">' . PHP_EOL;
         }
 
-        if (! empty($live_key)) {
-
-            echo sprintf(
-                '<script src="https://aibot.skriptx.com/widgets/aibot.js?key=%s"></script>' . PHP_EOL,
-                urlencode($live_key)
-            );
+        /**
+         * Store live key for frontend usage (safer approach)
+         */
+        if ( ! empty($aibot_live_key) ) {
+            echo '<meta name="aibot:live-key" content="' . esc_attr($aibot_live_key) . '">' . PHP_EOL;
         }
+    }
+
+    /**
+     * Proper WP enqueue for frontend widget
+     */
+    public function enqueue_frontend_widget()
+    {
+        $aibot_live_key = get_option('aibot_live_key', '');
+
+        if ( empty($aibot_live_key) ) {
+            return;
+        }
+
+        $aibot_script_url = add_query_arg(
+            [
+                'key' => $aibot_live_key,
+            ],
+            'https://aibot.skriptx.com/widgets/aibot.js'
+        );
+
+        wp_enqueue_script(
+            'aibot-widget',
+            esc_url_raw($aibot_script_url),
+            [],
+            $this->version,
+            true,
+        );
     }
 }
 
