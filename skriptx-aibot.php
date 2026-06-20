@@ -2,24 +2,24 @@
 /**
  * Plugin Name: Skriptx AIBot
  * Plugin URI: https://aibot.skriptx.com
- * Description: Skriptx AIBot is an AI-powered WordPress plugin that helps you generate high-quality content, automate writing tasks, and enhance your website productivity using advanced AI models.
- * Version: 2.0.0
+ * Description: Skriptx AIBot is an intelligent AI chatbot for WordPress websites that automatically reads and learns from website content. It trains itself on your pages and provides instant answers to customer questions, improving support and engagement without manual configuration.
+ * Version: 3.0.0
  * Author: Skriptx
  * Author URI: https://skriptx.com
  * Support URI: https://support.skriptx.com
  * Text Domain: skriptx-aibot
- * Stable tag: 2.0.0
+ * Stable tag: 3.0.0
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if ( ! defined('ABSPATH') ) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
 class AIBotPlugin
 {
-    private $version = "2.0.0";
+    private $version = "3.0.0";
     /**
      * Constructor
      */
@@ -37,14 +37,12 @@ class AIBotPlugin
      */
     public function register_admin_menu()
     {
-        add_menu_page(
+        add_options_page(
             'AIBot',
             'AIBot',
             'manage_options',
             'aibot',
             [$this, 'aibot_page'],
-            'dashicons-admin-site-alt3',
-            25
         );
     }
 
@@ -53,7 +51,7 @@ class AIBotPlugin
      */
     public function enqueue_assets($hook)
     {
-        if ( $hook !== 'toplevel_page_aibot' ) {
+        if ($hook !== 'settings_page_aibot') {
             return;
         }
 
@@ -61,14 +59,14 @@ class AIBotPlugin
             'aibot-style',
             plugin_dir_url(__FILE__) . 'assets/css/style.css',
             [],
-            '2.0.0'
+            '3.0.0'
         );
 
         wp_enqueue_script(
             'aibot-script',
             plugin_dir_url(__FILE__) . 'assets/js/script.js',
             ['jquery'],
-            '2.0.0',
+            '3.0.0',
             true
         );
     }
@@ -78,7 +76,7 @@ class AIBotPlugin
      */
     public function aibot_page()
     {
-        include plugin_dir_path(__FILE__) . 'pages/aibot.php';
+        include plugin_dir_path(__FILE__) . 'pages/index.php';
     }
 
     /**
@@ -92,14 +90,14 @@ class AIBotPlugin
         /**
          * Verify meta tag
          */
-        if ( ! empty($aibot_verify_key) ) {
+        if (! empty($aibot_verify_key)) {
             echo '<meta name="sb:verify-key" content="' . esc_attr($aibot_verify_key) . '">' . PHP_EOL;
         }
 
         /**
          * Store live key for frontend usage (safer approach)
          */
-        if ( ! empty($aibot_live_key) ) {
+        if (! empty($aibot_live_key)) {
             echo '<meta name="aibot:live-key" content="' . esc_attr($aibot_live_key) . '">' . PHP_EOL;
         }
     }
@@ -111,7 +109,7 @@ class AIBotPlugin
     {
         $aibot_live_key = get_option('aibot_live_key', '');
 
-        if ( empty($aibot_live_key) ) {
+        if (empty($aibot_live_key)) {
             return;
         }
 
